@@ -26,7 +26,7 @@ namespace Prototype {
             base.LoadContent();
 
             this.world = new World();
-            this.player = new PlayerEntity(this.world);
+            this.player = new PlayerEntity(this.world) {Position = new Vector2(0, -10)};
             this.world.AddEntity(this.player);
             this.camera = new Camera(this.GraphicsDevice) {
                 Scale = 2,
@@ -35,6 +35,7 @@ namespace Prototype {
 
             this.UiSystem.Style.Font = new GenericSpriteFont(LoadContent<SpriteFont>("Font"));
             this.UiSystem.Style.TextScale = 0.15F;
+            this.InputHandler.HandleKeyboardRepeats = false;
 
             var debug = new Group(Anchor.TopLeft, Vector2.One);
             this.world.AddDebugInfo(debug);
@@ -45,6 +46,9 @@ namespace Prototype {
         protected override void DoUpdate(GameTime gameTime) {
             base.DoUpdate(gameTime);
             this.world.Update(gameTime);
+
+            var goalPos = (this.player.Position + new Vector2(0.5F, -1)) * World.DrawScale;
+            this.camera.LookingPosition = Vector2.Lerp(this.camera.LookingPosition, goalPos, 0.5F);
         }
 
         protected override void DoDraw(GameTime gameTime) {

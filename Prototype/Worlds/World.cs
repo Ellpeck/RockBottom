@@ -17,6 +17,11 @@ namespace Prototype.Worlds {
         // TODO figure out a better way to do this than concurrent dicts, probably? maybe not if we multi-thread chunk gen
         private readonly IDictionary<Point, Chunk> chunks = new ConcurrentDictionary<Point, Chunk>();
         private int nextEntityId;
+        public Vector2 Gravity { get; protected set; }
+
+        public World() {
+            this.Gravity = new Vector2(0, 0.008F);
+        }
 
         public Chunk GetChunk(Point chunkPos) {
             if (!this.chunks.TryGetValue(chunkPos, out var chunk)) {
@@ -75,15 +80,12 @@ namespace Prototype.Worlds {
             var minY = (visible.Top / Chunk.Size).Floor();
             var maxX = (visible.Right / Chunk.Size).Floor();
             var maxY = (visible.Bottom / Chunk.Size).Floor();
-            var i = 0;
             for (var x = minX; x <= maxX; x++) {
                 for (var y = minY; y <= maxY; y++) {
                     if (this.chunks.TryGetValue(new Point(x, y), out var chunk))
                         chunk.Draw(time, batch, visible);
-                    i++;
                 }
             }
-            Console.WriteLine(i);
         }
 
         internal void AddDebugInfo(Group group) {

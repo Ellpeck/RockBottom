@@ -22,7 +22,7 @@ namespace Prototype.Worlds {
                     var innerPos = new Point(x, y);
                     var tilePos = chunk.WorldPosition + innerPos;
                     // TODO
-                    this[innerPos] = tilePos.Y > 1 ? new Tile(this, tilePos) : new AirTile(this, tilePos);
+                    this[innerPos] = tilePos.Y > 1 || x == 1 ? new Tile(this, tilePos) : new AirTile(this, tilePos);
                 }
             }
         }

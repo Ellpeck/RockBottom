@@ -29,16 +29,19 @@ namespace Prototype.Worlds {
         }
 
         public Tile GetTile(Point worldPos, string layer = null) {
-            return this.layers[layer ?? "Main"][worldPos];
+            return this.layers[layer ?? "Main"][worldPos - this.WorldPosition];
         }
 
         public void SetTile(Tile tile, Point worldPos, string layer = null) {
-            this.layers[layer ?? "Main"][worldPos] = tile;
+            this.layers[layer ?? "Main"][worldPos - this.WorldPosition] = tile;
         }
 
         public IEnumerable<T> EnumerateEntities<T>(RectangleF area) where T : Entity {
             foreach (var entity in this.entities.Values) {
-                if (entity is T t && entity.IsColliding(area, CollidingType.Query))
+                if (!(entity is T t))
+                    continue;
+                var box = t.GetCollisionBox(CollidingType.Query);
+                if (!box.IsEmpty && box.Intersects(area))
                     yield return t;
             }
         }
@@ -60,7 +63,8 @@ namespace Prototype.Worlds {
 
         internal void Draw(GameTime time, SpriteBatch batch, RectangleF visible) {
             foreach (var entity in this.entities.Values) {
-                if (entity.IsColliding(visible, CollidingType.Draw))
+                var box = entity.GetCollisionBox(CollidingType.Draw);
+                if (!box.IsEmpty && box.Intersects(visible))
                     entity.Draw(time, batch, 0.5F);
             }
 

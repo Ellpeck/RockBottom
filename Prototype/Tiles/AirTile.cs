@@ -10,8 +10,8 @@ namespace Prototype.Tiles {
         public AirTile(TileLayer layer, Point position) : base(layer, position) {
         }
 
-        public override bool IsColliding(RectangleF area, CollidingType type) {
-            return false;
+        public override RectangleF GetCollisionBox(CollidingType type) {
+            return RectangleF.Empty;
         }
 
         public override void Draw(GameTime time, SpriteBatch batch, float depth) {

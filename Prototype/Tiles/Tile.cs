@@ -23,8 +23,8 @@ namespace Prototype.Tiles {
             batch.Draw(batch.GetBlankTexture(), area, Color.Gray);
         }
 
-        public virtual bool IsColliding(RectangleF area, CollidingType type) {
-            return area.Intersects(new RectangleF(this.Position.ToVector2(), Vector2.One));
+        public virtual RectangleF GetCollisionBox(CollidingType type) {
+            return new RectangleF(this.Position.X, this.Position.Y, 1, 1);
         }
 
     }
