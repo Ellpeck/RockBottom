@@ -6,25 +6,35 @@ namespace Prototype.Worlds {
 
         private readonly Chunk chunk;
         public float Depth { get; private set; }
+        public float Brightness { get; private set; }
         private Tile[,] tiles;
-        public Tile this[Point pos] {
-            get => this.tiles[pos.X, pos.Y];
-            set => this.tiles[pos.X, pos.Y] = value;
-        }
 
-        public TileLayer(Chunk chunk, float depth) {
+        public TileLayer(Chunk chunk, float depth, float brightness) {
             this.chunk = chunk;
             this.Depth = depth;
+            this.Brightness = brightness;
 
             this.tiles = new Tile[Chunk.Size, Chunk.Size];
             for (var x = 0; x < Chunk.Size; x++) {
                 for (var y = 0; y < Chunk.Size; y++) {
-                    var innerPos = new Point(x, y);
-                    var tilePos = chunk.WorldPosition + innerPos;
+                    var tilePos = chunk.WorldPosition + new Point(x, y);
                     // TODO
-                    this[innerPos] = tilePos.Y > 1 || x == 1 ? new Tile(this, tilePos) : new AirTile(this, tilePos);
+                    var type = tilePos.Y > 1 || x == 1 ? TileType.Rock : TileType.Air;
+                    this.SetTile(type, tilePos);
                 }
             }
+        }
+
+        public Tile GetTile(Point worldPos) {
+            var (x, y) = worldPos - this.chunk.WorldPosition;
+            return this.tiles[x, y];
+        }
+
+        public void SetTile(TileType type, Point worldPos) {
+            var tile = type.Create();
+            tile.Place(this, worldPos);
+            var (x, y) = worldPos - this.chunk.WorldPosition;
+            this.tiles[x, y] = tile;
         }
 
     }

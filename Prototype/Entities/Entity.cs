@@ -28,7 +28,7 @@ namespace Prototype.Entities {
             this.Move(time);
         }
 
-        public virtual void Draw(GameTime time, SpriteBatch batch, float depth) {
+        public virtual void Draw(GameTime time, SpriteBatch batch) {
         }
 
         public virtual RectangleF GetCollisionBox(CollidingType type, Vector2? position = null) {
@@ -73,7 +73,7 @@ namespace Prototype.Entities {
                 this.CollidingHorizontally = motion.X != this.Motion.X;
                 this.CollidingVertically = motion.Y != this.Motion.Y;
                 this.IsOnGround = this.CollidingVertically && this.Motion.Y > 0;
-                if (this.IsOnGround)
+                if (this.CollidingVertically)
                     this.Motion = new Vector2(this.Motion.X, 0);
             }
         }

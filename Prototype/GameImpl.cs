@@ -16,10 +16,11 @@ namespace Prototype {
         public static GameImpl Instance { get; private set; }
         private World world;
         private PlayerEntity player;
-        private Camera camera;
+        public Camera Camera { get; private set; }
 
         public GameImpl() {
             Instance = this;
+            this.IsMouseVisible = true;
         }
 
         protected override void LoadContent() {
@@ -28,8 +29,8 @@ namespace Prototype {
             this.world = new World();
             this.player = new PlayerEntity(this.world) {Position = new Vector2(0, -10)};
             this.world.AddEntity(this.player);
-            this.camera = new Camera(this.GraphicsDevice) {
-                Scale = 2,
+            this.Camera = new Camera(this.GraphicsDevice) {
+                Scale = 3,
                 LookingPosition = new Vector2(0, -10)
             };
 
@@ -48,15 +49,15 @@ namespace Prototype {
             this.world.Update(gameTime);
 
             var goalPos = (this.player.Position + new Vector2(0.5F, -1)) * World.DrawScale;
-            this.camera.LookingPosition = Vector2.Lerp(this.camera.LookingPosition, goalPos, 0.5F);
+            this.Camera.LookingPosition = Vector2.Lerp(this.Camera.LookingPosition, goalPos, 0.5F);
         }
 
         protected override void DoDraw(GameTime gameTime) {
             this.GraphicsDevice.Clear(Color.CornflowerBlue);
             base.DoDraw(gameTime);
 
-            this.SpriteBatch.Begin(SpriteSortMode.BackToFront, null, SamplerState.PointClamp, null, null, null, this.camera.ViewMatrix);
-            var rect = this.camera.GetVisibleRectangle();
+            this.SpriteBatch.Begin(SpriteSortMode.FrontToBack, null, SamplerState.PointClamp, null, null, null, this.Camera.ViewMatrix);
+            var rect = this.Camera.GetVisibleRectangle();
             var visible = new RectangleF(rect.Left / World.DrawScale, rect.Top / World.DrawScale, rect.Width / World.DrawScale, rect.Height / World.DrawScale);
             this.world.Draw(gameTime, this.SpriteBatch, visible);
             this.SpriteBatch.End();

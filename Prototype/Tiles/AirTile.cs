@@ -7,14 +7,14 @@ using Prototype.Worlds;
 namespace Prototype.Tiles {
     public class AirTile : Tile {
 
-        public AirTile(TileLayer layer, Point position) : base(layer, position) {
+        public AirTile() : base(TileType.Air) {
         }
 
         public override RectangleF GetCollisionBox(CollidingType type) {
             return RectangleF.Empty;
         }
 
-        public override void Draw(GameTime time, SpriteBatch batch, float depth) {
+        public override void Draw(GameTime time, SpriteBatch batch) {
             // noop
         }
 

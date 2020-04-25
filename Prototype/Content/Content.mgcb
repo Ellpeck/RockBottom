@@ -20,3 +20,8 @@
 /processorParam:TextureFormat=Compressed
 /build:Font.spritefont
 
+#begin Tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Tiles.png
+

@@ -9,7 +9,7 @@ namespace Prototype.Worlds {
 
         Tile GetTile(Point worldPos, string layer = null);
 
-        void SetTile(Tile tile, Point worldPos, string layer = null);
+        void SetTile(TileType tile, Point worldPos, string layer = null);
 
         IEnumerable<T> EnumerateEntities<T>(RectangleF area) where T : Entity;
 

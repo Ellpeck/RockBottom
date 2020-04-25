@@ -2,10 +2,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MLEM.Extensions;
+using MLEM.Input;
 using MLEM.Misc;
 using MLEM.Startup;
 using MLEM.Ui;
 using MLEM.Ui.Elements;
+using Prototype.Tiles;
 using Prototype.Worlds;
 
 namespace Prototype.Entities {
@@ -32,10 +34,19 @@ namespace Prototype.Entities {
                 this.Motion += new Vector2(-0.05F, 0);
             if (MlemGame.Input.IsKeyDown(Keys.D))
                 this.Motion += new Vector2(0.05F, 0);
+
+            var mouse = MlemGame.Input.MousePosition.ToVector2();
+            var worldMouse = GameImpl.Instance.Camera.ToWorldPos(mouse) / World.DrawScale;
+            var tileMouse = new Point(worldMouse.X.Floor(), worldMouse.Y.Floor());
+            if (MlemGame.Input.IsMouseButtonPressed(MouseButton.Left)) {
+                this.World.SetTile(TileType.Air, tileMouse);
+            } else if (MlemGame.Input.IsMouseButtonPressed(MouseButton.Right)) {
+                this.World.SetTile(TileType.Rock, tileMouse);
+            }
         }
 
-        public override void Draw(GameTime time, SpriteBatch batch, float depth) {
-            batch.Draw(batch.GetBlankTexture(), new RectangleF(this.Position * World.DrawScale, new Vector2(World.DrawScale)), Color.Red);
+        public override void Draw(GameTime time, SpriteBatch batch) {
+            batch.Draw(batch.GetBlankTexture(), new RectangleF(this.Position * World.DrawScale, new Vector2(World.DrawScale)), null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 0.5F);
         }
 
         public void AddDebugInfo(Group group) {

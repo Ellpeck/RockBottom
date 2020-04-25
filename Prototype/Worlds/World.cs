@@ -23,11 +23,12 @@ namespace Prototype.Worlds {
             this.Gravity = new Vector2(0, 0.008F);
         }
 
-        public Chunk GetChunk(Point chunkPos) {
-            if (!this.chunks.TryGetValue(chunkPos, out var chunk)) {
-                chunk = new Chunk(chunkPos);
+        public Chunk GetChunk(Point chunkPos, bool load = true) {
+            if (!this.chunks.TryGetValue(chunkPos, out var chunk) && load) {
+                chunk = new Chunk(this, chunkPos);
                 this.chunks.Add(chunkPos, chunk);
             }
+            chunk.Refresh();
             return chunk;
         }
 
@@ -35,7 +36,7 @@ namespace Prototype.Worlds {
             return this.GetChunk(ToChunkPos(worldPos)).GetTile(worldPos, layer);
         }
 
-        public void SetTile(Tile tile, Point worldPos, string layer = null) {
+        public void SetTile(TileType tile, Point worldPos, string layer = null) {
             this.GetChunk(ToChunkPos(worldPos)).SetTile(tile, worldPos, layer);
         }
 
@@ -71,8 +72,11 @@ namespace Prototype.Worlds {
         }
 
         internal void Update(GameTime time) {
-            foreach (var chunk in this.chunks.Values)
-                chunk.Update(time);
+            foreach (var chunk in this.chunks.Values) {
+                if (chunk.Update(time))
+                    this.chunks.Remove(chunk.Position);
+                // TODO saving chunks
+            }
         }
 
         internal void Draw(GameTime time, SpriteBatch batch, RectangleF visible) {
